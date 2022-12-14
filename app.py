@@ -368,7 +368,7 @@ def homepage():
         # TODO: Check if we can do this with the follows table
 
         following_users_id = [user.id for user in g.user.following]
-
+        following_users_id.append(g.user.id)
         messages = (Message
                     .query
                     .filter(Message.user_id.in_(following_users_id))
