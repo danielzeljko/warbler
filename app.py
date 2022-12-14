@@ -35,7 +35,7 @@ connect_db(app)
 def add_user_to_g():
     """If we're logged in, add curr user to Flask global."""
     # breakpoint()
-    if CURR_USER_KEY in session:
+    if CURR_USER_KEY in session: # creates single source of truth throughout entire session. by setting user through user id in session
         g.user = User.query.get(session[CURR_USER_KEY])
 
     else:
@@ -247,7 +247,7 @@ def profile():
     Password has to be entered and be correct for profile to update.
     """
 
-    if not g.user:
+    if not g.user: # confirms user is logged in vs session where user could be loggedout.
         flash("Access unauthorized.", "danger")
         return redirect("/")
 
@@ -367,8 +367,9 @@ def homepage():
     if g.user:
         # TODO: Check if we can do this with the follows table
 
-        following_users_id = [user.id for user in g.user.following]
-        following_users_id.append(g.user.id)
+        # following_users_id = [user.id for user in g.user.following].append(g.user.id)
+        following_users_id = [user.id for user in g.user.following]+[g.user.id]
+        # following_users_id.append(g.user.id)
         messages = (Message
                     .query
                     .filter(Message.user_id.in_(following_users_id))

@@ -8,7 +8,7 @@ class MessageForm(FlaskForm):
 
     text = TextAreaField('text', validators=[DataRequired()])
 
-
+# for making it easy for user to sign up
 class UserAddForm(FlaskForm):
     """Form for adding users."""
 
@@ -28,7 +28,7 @@ class LoginForm(FlaskForm):
 class CSRFOnlyForm(FlaskForm):
     """ CSRF only form. """
 
-
+# for user to be able to come back and update information
 class UserEditForm(FlaskForm):
     """Form for editing users."""
 
