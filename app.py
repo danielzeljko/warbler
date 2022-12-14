@@ -363,13 +363,19 @@ def homepage():
     - logged in: 100 most recent messages of followed_users
     """
 
+    following_users_id = [user.id for user in g.user.following]
+    # breakpoint()
+
     if g.user:
+        # TODO: Check if we can do this with the follows table
+
         messages = (Message
                     .query
+                    .filter(User.id.in_(following_users_id))
                     .order_by(Message.timestamp.desc())
                     .limit(100)
                     .all())
-
+        # breakpoint()
         return render_template('home.html', messages=messages)
 
     else:
