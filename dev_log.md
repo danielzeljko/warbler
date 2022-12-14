@@ -5,3 +5,4 @@ Logout Bugs:
 
 Profile Bugs:
     1. Fixed user bio and location
+    2. Fixed header image in user detail page
