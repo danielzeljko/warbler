@@ -5,7 +5,7 @@ from flask import Flask, render_template, request, flash, redirect, session, g
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 
-from forms import UserAddForm, LoginForm, MessageForm, CSRFOnlyForm
+from forms import UserAddForm, LoginForm, MessageForm, CSRFOnlyForm, UserEditForm
 from models import db, connect_db, User, Message
 
 load_dotenv()
@@ -242,10 +242,37 @@ def stop_following(follow_id):
 
 @app.route('/users/profile', methods=["GET", "POST"])
 def profile():
-    """Update profile for current user."""
+    """
+    Update profile for current user.
+    Password has to be entered and be correct for profile to update.
+    """
 
-    # TODO: IMPLEMENT THIS
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
 
+    # user = User.query.get(g.user.id)
+    form = UserEditForm(obj=g.user)
+
+
+    if form.validate_on_submit():
+
+        password = form.password.data
+
+        if User.authenticate(username=g.user.username, password=password):
+            g.user.username = form.data.get("username", g.user.username)
+            g.user.email = form.data.get("email", g.user.email)
+            g.user.image_url = form.data.get("image_url", g.user.image_url)
+            g.user.header_image_url = form.data.get("header_image_url", g.user.header_image_url)
+            g.user.bio = form.data.get("bio", g.user.bio)
+
+            db.session.commit()
+
+            return redirect(f"/users/{g.user.id}")
+        else:
+            flash("Password is not correct. Please try again.")
+
+    return render_template("users/edit.html", form=form)
 
 
 @app.post('/users/delete')

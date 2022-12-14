@@ -27,3 +27,16 @@ class LoginForm(FlaskForm):
 
 class CSRFOnlyForm(FlaskForm):
     """ CSRF only form. """
+
+
+class UserEditForm(FlaskForm):
+    """Form for editing users."""
+
+    username = StringField('Username', validators=[DataRequired()])
+    email = StringField('E-mail', validators=[DataRequired(), Email()])
+    image_url = StringField('(Optional) Image URL')
+    header_image_url = StringField('(Optional) Hero Image URL')
+    bio = TextAreaField('Bio')
+    password = PasswordField('Password', validators=[Length(min=6)])
+
+
