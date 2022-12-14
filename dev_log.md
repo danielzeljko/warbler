@@ -10,3 +10,6 @@ Profile Bugs:
 
 User Cards:
     1. Fix user bio not appearing
+
+Home page:
+    1. Fixed home page for when user logged. Messages only being shown from followed users.
