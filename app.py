@@ -425,6 +425,7 @@ def homepage():
     if g.user:
         following_users_id = [user.id for user in g.user.following]+[g.user.id]
 
+        # 'in' is a python operator
         # '2' in ['1', '2']
         # '2' == ['1', '2'] is this string '2' equal to list X
 
