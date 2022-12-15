@@ -57,15 +57,6 @@
               <span class="text-muted">{{ msg.timestamp.strftime('%d %B %Y') }}</span>
               <p>{{ msg.text }}</p>
             </div>
-            <div>
-              <form method="POST" action="/like">
-                <button type="submit" class="btn btn-primary">
-                  Like
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star"></i>
-                </button>
-              </form>
-            </div>
           </li>
         {% endfor %}
       </ul>

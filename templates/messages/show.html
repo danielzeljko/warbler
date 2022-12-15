@@ -47,6 +47,7 @@
             </span>
         </div>
         <form method="POST" action="/messages/{{ message.id }}/like">
+          {{ g.csrf_form.hidden_tag() }}
           <button type="submit" class="btn btn-primary">
             Like
             <i class="bi bi-star-fill"></i>

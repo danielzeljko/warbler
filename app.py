@@ -368,18 +368,27 @@ def like_message(message_id):
 
     if form.validate_on_submit():
 
+        """
+            TODO:
+                1. Make sure the user cannot like their own message
+                2. Create the view to show all the liked messages for the user
+                3. Fix the button to show either a filled or empty star
+                4. Fix the homepage to show the like form as well
 
-        # TODO: make sure their own warbles are not included.
+                # this didn't work see note in models.py
+                # 5. Check primary key in table
+                #     - drop tables and recreate them and check to see
+                #       what happens when we like the same message
+                #       will it throw an integrity error?
+        """
+
         like_message_user_ids = [like.user_id for like in message.likes]
 
         if g.user.id in like_message_user_ids:
-            # q.filter(Employee.state == 'CA', Employee.id > 65)
-
             previous_like = Like.query.filter(Like.user_id == g.user.id, Like.message_id == message.id)
 
-            # previous_like = Like.query.filter(User.id == like.user_id)
-            previous_like.delete()
-            # message.likes.remove(previous_like)
+            db.session.delete(previous_like.first())
+            db.session.commit()
         else:
             new_like = Like(user_id = g.user.id, message_id = message_id)
             db.session.add(new_like)

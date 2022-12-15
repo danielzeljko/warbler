@@ -181,16 +181,32 @@ class Like(db.Model):
         primary_key=True,
     )
 
+    """
+        NOTE:
+
+        primary_key was removed in favor of having a id to be able to access
+        a specific like when needed.
+
+        Unique together between id, user_id and message_id was not throwing
+        an error if the same user liked the message
+
+        together_together = (id, user_id, message_id)
+        [<Like 1, 301, 6>, <Like 2, 301, 6>] bad
+
+    """
+
     user_id = db.Column(
         db.Integer,
         db.ForeignKey('users.id', ondelete='CASCADE'),
         nullable=False,
+        # primary_key=True,
     )
 
     message_id = db.Column(
         db.Integer,
         db.ForeignKey('messages.id', ondelete='CASCADE'),
         nullable=False,
+        # primary_key=True,
     )
 
     user = db.relationship('User', backref="likes")
