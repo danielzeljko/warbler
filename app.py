@@ -329,8 +329,8 @@ def show_message(message_id):
         return redirect("/")
 
     msg = Message.query.get_or_404(message_id)
-    # TODO: check if message is liked
 
+    # USE ORM user.liked_messages
     like_message_user_ids = [like.user_id for like in msg.likes]
 
     if g.user.id in like_message_user_ids: #able to add property on objects as a one time thing

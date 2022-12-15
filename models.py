@@ -85,6 +85,14 @@ class User(db.Model):
         backref="following",
     )
 
+    liked_messages = db.relationship(
+        "Like",
+        primaryjoin=(Like.user_id == id),
+        backref="user"
+
+
+    )
+
     def __repr__(self):
         return f"<User #{self.id}: {self.username}, {self.email}>"
 
@@ -201,7 +209,6 @@ class Like(db.Model):
         nullable=False,
         # primary_key=True,
     )
-
 
 
     user = db.relationship('User', backref="likes")

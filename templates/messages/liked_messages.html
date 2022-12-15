@@ -47,8 +47,11 @@
     <div class="col-lg-6 col-md-8 col-sm-12">
       <ul class="list-group" id="messages">
         {% for like in user.likes %}
+        <!-- USE ORM -->
           <li class="list-group-item">
+            <!-- like.message_id -->
             <a href="/messages/{{ like.message.id }}" class="message-link">
+              <!-- like.user_id -->
             <a href="/users/{{ like.message.user.id }}">
               <img src="{{ like.message.user.image_url }}" alt="" class="timeline-image">
             </a>
