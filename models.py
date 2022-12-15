@@ -17,6 +17,7 @@ class Follows(db.Model):
 
     __tablename__ = 'follows'
 
+    # recursive relationship
     user_being_followed_id = db.Column(
         db.Integer,
         db.ForeignKey('users.id', ondelete="cascade"),
@@ -63,8 +64,8 @@ class Like(db.Model):
     )
 
 
-    user = db.relationship('User', backref="likes")
-    message = db.relationship('Message', backref="likes")
+    # user = db.relationship('User', backref="likes")
+    # message = db.relationship('Message', backref="likes")
 
 
 class User(db.Model):
@@ -112,7 +113,22 @@ class User(db.Model):
         nullable=False,
     )
 
+    # the instance sbeing returned will always be what I passed in
+    # as my first arg (Message)
     messages = db.relationship('Message', backref="user")
+
+    # we have two fk that link back to user
+    # which column are we linking to?
+        # thats why we use primary and secondary join
+
+    # user = 301
+
+    # user.followers
+    # SELECT * FROM users WHERE users.id = 301;
+
+    # user.following
+    # SELECT * FROM follows WHERE user_following_id = 301;
+    # backref looking at secondary join
 
     followers = db.relationship(
         "User",
@@ -122,6 +138,37 @@ class User(db.Model):
         backref="following",
     )
 
+    """
+    Secondary:
+        every use can make multiple messages 1 to M
+        this means I can create a join
+        I dont want to know all the messages the user created
+        I want to know all the messages the user liked
+
+        Like model
+            purpose: keep track user that liked message
+                which user liked which msg
+
+
+        secondary:
+            Because the first param is Message, this means what
+            are the instances that will be assigned to the variable.
+
+            liked_messages will always be a list of Messages
+
+
+    Primary join:
+
+    Secondary join:
+    """
+
+    # my instances will be messages, but I want those instances
+    # coming from the likes table
+
+    # this will only work if likes has a fk that matches
+    # the current model we're talking about
+
+    # my Like has the user
 
     liked_messages = db.relationship(
         "Message",
@@ -218,6 +265,10 @@ class Message(db.Model):
         db.ForeignKey('users.id', ondelete='CASCADE'),
         nullable=False,
     )
+
+    def is_liked(self, user):
+        self in g.user.liked_messages
+        return t f
 
 
 

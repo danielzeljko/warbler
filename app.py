@@ -381,15 +381,19 @@ def like_message(message_id):
     if form.validate_on_submit():
 
         # get all message_ids of liked messages
-        like_message_ids = [message.id for message in g.user.liked_messages]
+        # like_message_ids = [message.id for message in g.user.liked_messages]
 
-        if message_id in like_message_ids:
+        # Like.query.get(message_id=message., ) in g.user.like
+
+        if message in g.user.liked_messages:
+        # if message_id in like_message_ids:
             g.user.liked_messages.remove(message)
-            db.session.commit()
+            # db.session.commit()
         else:
             # handles unfilled star
             g.user.liked_messages.append(message) #adding message to a list of messages (users's liked messages)
-            db.session.commit()
+
+        db.session.commit()
 
     return redirect(f"/users/{g.user.id}")
 
