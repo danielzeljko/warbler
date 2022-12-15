@@ -47,16 +47,7 @@
             </span>
         </div>
         {% if not message.user == g.user %}
-        <form method="POST" action="/messages/{{ message.id }}/like">
-          {{ g.csrf_form.hidden_tag() }}
-          <button type="submit" class="btn btn-primary">
-            {% if message.is_liked %}
-                <i class="bi bi-star-fill"></i>
-            {% else %}
-                <i class="bi bi-star"></i>
-            {% endif %}
-          </button>
-        </form>
+          {% include 'messages/like_button.html' %}
         {% endif %}
       </li>
     </ul>
