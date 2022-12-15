@@ -30,6 +30,43 @@ class Follows(db.Model):
     )
 
 
+
+class Like(db.Model):
+    """ A liked warble. """
+
+    __tablename__ = 'likes'
+
+    __table_args__ = (
+        db.UniqueConstraint(
+            'user_id',
+            'message_id',
+            ),
+        )
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+    )
+
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id', ondelete='CASCADE'),
+        nullable=False,
+        # primary_key=True,
+    )
+
+    message_id = db.Column(
+        db.Integer,
+        db.ForeignKey('messages.id', ondelete='CASCADE'),
+        nullable=False,
+        # primary_key=True,
+    )
+
+
+    user = db.relationship('User', backref="likes")
+    message = db.relationship('Message', backref="likes")
+
+
 class User(db.Model):
     """User in the system."""
 
@@ -85,13 +122,17 @@ class User(db.Model):
         backref="following",
     )
 
+
     liked_messages = db.relationship(
-        "Like",
-        primaryjoin=(Like.user_id == id),
-        backref="user"
-
-
+        "Message",
+        secondary="likes",
+        # primaryjoin=(Like.user_id == id),
+        # secondaryjoin=(Like.message_id == id),
+        # backref="user"
     )
+
+    # user.id | user_thatliked_id | message_id
+
 
     def __repr__(self):
         return f"<User #{self.id}: {self.username}, {self.email}>"
@@ -179,40 +220,8 @@ class Message(db.Model):
     )
 
 
-class Like(db.Model):
-    """ A liked warble. """
-
-    __tablename__ = 'likes'
-
-    __table_args__ = (
-        db.UniqueConstraint(
-            'user_id',
-            'message_id',
-            ),
-        )
-
-    id = db.Column(
-        db.Integer,
-        primary_key=True,
-    )
-
-    user_id = db.Column(
-        db.Integer,
-        db.ForeignKey('users.id', ondelete='CASCADE'),
-        nullable=False,
-        # primary_key=True,
-    )
-
-    message_id = db.Column(
-        db.Integer,
-        db.ForeignKey('messages.id', ondelete='CASCADE'),
-        nullable=False,
-        # primary_key=True,
-    )
 
 
-    user = db.relationship('User', backref="likes")
-    message = db.relationship('Message', backref="likes")
 
 
 
