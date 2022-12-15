@@ -58,9 +58,12 @@
               <p>{{ message.text }}</p>
             </div>
             {% if not message.user == g.user %}
-              {% include 'messages/like_button.html' %}
-            {% endif %}
+            {% include 'messages/like_button.html' %}
+          {% endif %}
           </li>
+          <div>
+
+          </div>
         {% endfor %}
       </ul>
     </div>
