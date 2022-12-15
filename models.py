@@ -171,6 +171,32 @@ class Message(db.Model):
     )
 
 
+class Like(db.Model):
+    """ A liked warble. """
+
+    __tablename__ = 'likes'
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+    )
+
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id', ondelete='CASCADE'),
+        nullable=False,
+    )
+
+    message_id = db.Column(
+        db.Integer,
+        db.ForeignKey('messages.id', ondelete='CASCADE'),
+        nullable=False,
+    )
+
+    user = db.relationship('User', backref="likes")
+
+
+
 def connect_db(app):
     """Connect this database to provided Flask app.
 

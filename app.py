@@ -6,7 +6,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 
 from forms import UserAddForm, LoginForm, MessageForm, CSRFOnlyForm, UserEditForm
-from models import db, connect_db, User, Message
+from models import db, connect_db, User, Message, Like
 
 load_dotenv()
 
@@ -349,6 +349,37 @@ def delete_message(message_id):
     db.session.commit()
 
     return redirect(f"/users/{g.user.id}")
+
+
+@app.post('/messages/<int:message_id>/like')
+def like_message():
+    """ Allows a user to “like” or "unlike" a warble.
+        Returns: Redirect to "/"
+    """
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
+    form = g.csrf_form
+
+    if form.validate_on_submit():
+
+        # check if current user is already liking this message
+            # Yes: delete the record
+            # No: add the record
+
+            # 3 in [msg.id for msg in me.likes]
+
+
+
+        msg = Message(text=form.text.data)
+        g.user.messages.append(msg)
+        db.session.commit()
+
+        return redirect(f"/users/{g.user.id}")
+
+    return render_template('messages/create.html', form=form)
 
 
 ##############################################################################
