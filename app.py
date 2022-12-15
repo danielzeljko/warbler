@@ -330,10 +330,9 @@ def show_message(message_id):
 
     msg = Message.query.get_or_404(message_id)
 
-    # USE ORM user.liked_messages
-    like_message_user_ids = [like.user_id for like in msg.likes]
+    liked_messages_ids = [message.id for message in g.user.liked_messages ]
 
-    if g.user.id in like_message_user_ids: #able to add property on objects as a one time thing
+    if message_id in liked_messages_ids: #able to add property on objects as a one time thing
         msg.is_liked = True
     else:
         msg.is_liked = False
@@ -424,18 +423,25 @@ def homepage():
 
 
     if g.user:
-        # TODO: Check if we can do this with the follows table
-
-        # following_users_id = [user.id for user in g.user.following].append(g.user.id)
         following_users_id = [user.id for user in g.user.following]+[g.user.id]
-        # following_users_id.append(g.user.id)
+
         messages = (Message
                     .query
                     .filter(Message.user_id.in_(following_users_id))
                     .order_by(Message.timestamp.desc())
                     .limit(100)
                     .all())
-        # breakpoint()
+
+        # TODO: I don't like this b/c it doesn't seem efficient
+
+        liked_messages_ids = [message.id for message in g.user.liked_messages]
+
+        for message in messages:
+            if message.id in liked_messages_ids:
+                message.is_liked = True
+            else:
+                message.is_liked = False
+
         return render_template('home.html', messages=messages)
 
     else:
