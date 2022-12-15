@@ -266,9 +266,9 @@ class Message(db.Model):
         nullable=False,
     )
 
-    def is_liked(self, user):
-        self in g.user.liked_messages
-        return t f
+    # def is_liked(self, user):
+    #     self in g.user.liked_messages
+    #     return t f
 
 
 
