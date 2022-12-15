@@ -46,6 +46,7 @@
               {{ message.timestamp.strftime('%d %B %Y') }}
             </span>
         </div>
+        {% if not message.user == g.user %}
         <form method="POST" action="/messages/{{ message.id }}/like">
           {{ g.csrf_form.hidden_tag() }}
           <button type="submit" class="btn btn-primary">
@@ -56,6 +57,7 @@
             {% endif %}
           </button>
         </form>
+        {% endif %}
       </li>
     </ul>
   </div>

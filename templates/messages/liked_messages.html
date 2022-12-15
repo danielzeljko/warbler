@@ -46,7 +46,7 @@
 
     <div class="col-lg-6 col-md-8 col-sm-12">
       <ul class="list-group" id="messages">
-        {% for like in likes %}
+        {% for like in user.likes %}
           <li class="list-group-item">
             <a href="/messages/{{ like.message.id }}" class="message-link">
             <a href="/users/{{ like.message.user.id }}">

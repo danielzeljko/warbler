@@ -372,24 +372,14 @@ def like_message(message_id):
 
     message = Message.query.get_or_404(message_id)
 
+    if message.user == g.user:
+        flash("You cannot like your own warble.", "danger")
+        return redirect("/")
+
 
     form = g.csrf_form
 
     if form.validate_on_submit():
-
-        """
-            TODO:
-                1. Make sure the user cannot like their own message
-                2. Create the view to show all the liked messages for the user
-                3. Fix the button to show either a filled or empty star
-                4. Fix the homepage to show the like form as well
-
-                # this didn't work see note in models.py
-                # 5. Check primary key in table
-                #     - drop tables and recreate them and check to see
-                #       what happens when we like the same message
-                #       will it throw an integrity error?
-        """
 
         like_message_user_ids = [like.user_id for like in message.likes]
 
@@ -419,7 +409,7 @@ def list_like_messages(user_id):
 
     user = User.query.get_or_404(user_id)
 
-    return render_template('templates/messages/liked_messages.html', user=user, likes=user.likes)
+    return render_template('messages/liked_messages.html', user=user)
 
 
 
