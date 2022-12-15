@@ -31,3 +31,10 @@ What does @app.before_request mean?
  Likes:
     1. created like_messages.html
     2. create post route to lke a message.
+
+
+12/15/22
+1. Changed model relationships
+    - user.liked_messages
+2. Show like button on homepage as well
+3. Updated like views to use new model relationships
