@@ -352,7 +352,7 @@ def delete_message(message_id):
 
 
 @app.post('/messages/<int:message_id>/like')
-def like_message():
+def like_message(message_id):
     """ Allows a user to “like” or "unlike" a warble.
         Returns: Redirect to "/"
     """
@@ -361,25 +361,32 @@ def like_message():
         flash("Access unauthorized.", "danger")
         return redirect("/")
 
+    message = Message.query.get_or_404(message_id)
+
+
     form = g.csrf_form
 
     if form.validate_on_submit():
 
-        # check if current user is already liking this message
-            # Yes: delete the record
-            # No: add the record
 
-            # 3 in [msg.id for msg in me.likes]
+        # TODO: make sure their own warbles are not included.
+        like_message_user_ids = [like.user_id for like in message.likes]
+
+        if g.user.id in like_message_user_ids:
+            # q.filter(Employee.state == 'CA', Employee.id > 65)
+
+            previous_like = Like.query.filter(Like.user_id == g.user.id, Like.message_id == message.id)
+
+            # previous_like = Like.query.filter(User.id == like.user_id)
+            previous_like.delete()
+            # message.likes.remove(previous_like)
+        else:
+            new_like = Like(user_id = g.user.id, message_id = message_id)
+            db.session.add(new_like)
+            db.session.commit()
 
 
-
-        msg = Message(text=form.text.data)
-        g.user.messages.append(msg)
-        db.session.commit()
-
-        return redirect(f"/users/{g.user.id}")
-
-    return render_template('messages/create.html', form=form)
+    return redirect(f"/users/{g.user.id}")
 
 
 ##############################################################################

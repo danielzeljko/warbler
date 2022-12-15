@@ -194,6 +194,7 @@ class Like(db.Model):
     )
 
     user = db.relationship('User', backref="likes")
+    message = db.relationship('Message', backref="likes")
 
 
 
