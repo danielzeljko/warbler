@@ -329,6 +329,15 @@ def show_message(message_id):
         return redirect("/")
 
     msg = Message.query.get_or_404(message_id)
+    # TODO: check if message is liked
+
+    like_message_user_ids = [like.user_id for like in msg.likes]
+
+    if g.user.id in like_message_user_ids: #able to add property on objects as a one time thing
+        msg.is_liked = True
+    else:
+        msg.is_liked = False
+
     return render_template('messages/show.html', message=msg)
 
 
@@ -385,17 +394,35 @@ def like_message(message_id):
         like_message_user_ids = [like.user_id for like in message.likes]
 
         if g.user.id in like_message_user_ids:
+            # handles filled star already
             previous_like = Like.query.filter(Like.user_id == g.user.id, Like.message_id == message.id)
 
             db.session.delete(previous_like.first())
             db.session.commit()
         else:
+            # handles unfilled star
             new_like = Like(user_id = g.user.id, message_id = message_id)
             db.session.add(new_like)
             db.session.commit()
 
 
+
     return redirect(f"/users/{g.user.id}")
+
+@app.get('/users/<int:user_id>/likes')
+def list_like_messages(user_id):
+    """Shows list of liked messages"""
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
+    user = User.query.get_or_404(user_id)
+
+    return render_template('templates/messages/liked_messages.html', user=user, likes=user.likes)
+
+
+
 
 
 ##############################################################################

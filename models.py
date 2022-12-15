@@ -128,7 +128,7 @@ class User(db.Model):
 
         return False
 
-    def is_followed_by(self, other_user):
+    def is_followed_by(self, other_user): # TODO: CAN WE USE THIS IN OUR SQL-ALCHEMY FILTERS SOME HOW?
         """Is this user followed by `other_user`?"""
 
         found_user_list = [

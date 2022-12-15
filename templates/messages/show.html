@@ -49,9 +49,11 @@
         <form method="POST" action="/messages/{{ message.id }}/like">
           {{ g.csrf_form.hidden_tag() }}
           <button type="submit" class="btn btn-primary">
-            Like
-            <i class="bi bi-star-fill"></i>
-            <i class="bi bi-star"></i>
+            {% if message.is_liked %}
+                <i class="bi bi-star-fill"></i>
+            {% else %}
+                <i class="bi bi-star"></i>
+            {% endif %}
           </button>
         </form>
       </li>

@@ -26,3 +26,8 @@ What is the purpose of add_user_to_g?
 
 What does @app.before_request mean?
  - Before every request is made, it is a decorator that that will execute before every request. It is similar to unittest's `setup` feature (typically paired with `tear down`)
+
+
+ Likes:
+    1. created like_messages.html
+    2. create post route to lke a message.
