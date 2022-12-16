@@ -55,6 +55,9 @@ class MessageBaseViewTestCase(TestCase):
         self.u1_id = u1.id
         self.m1_id = m1.id
 
+        self.u1 = u1
+        self.m1 = m1
+
         self.client = app.test_client()
 
 
@@ -62,14 +65,70 @@ class MessageAddViewTestCase(MessageBaseViewTestCase):
     def test_add_message(self):
         # Since we need to change the session to mimic logging in,
         # we need to use the changing-session trick:
-        with self.client as c:
-            with c.session_transaction() as sess:
+        with self.client as client:
+            with client.session_transaction() as sess:
                 sess[CURR_USER_KEY] = self.u1_id
 
             # Now, that session setting is saved, so we can have
             # the rest of ours test
-            resp = c.post("/messages/new", data={"text": "Hello"})
+            resp = client.post("/messages/new", data={"text": "Hello"}, follow_redirects=True)
 
-            self.assertEqual(resp.status_code, 302)
+            self.assertEqual(resp.status_code, 200)
 
-            Message.query.filter_by(text="Hello").one()
+            message = Message.query.filter_by(text="Hello").one()
+            html = resp.get_data(as_text=True)
+            self.assertIn(message.text, html)
+
+    def test_add_message_invalid_data(self):
+        """Submits message with invalid data"""
+
+        with self.client as client:
+            with client.session_transaction() as sess:
+                sess[CURR_USER_KEY] = self.u1_id
+            resp = client.post("/messages/new", data={"text": ""})
+            html = resp.get_data(as_text=True)
+            self.assertIn("This field is required.", html)
+            self.assertEqual(resp.status_code, 200)
+
+    def test_show_message(self):
+        """Check message shows up on page when authenticated"""
+
+        with self.client as client:
+            with client.session_transaction() as sess:
+                sess[CURR_USER_KEY] = self.u1_id
+
+            resp = client.get(f'/messages/{self.m1_id}')
+            self.assertEqual(resp.status_code, 200)
+            html = resp.get_data(as_text=True)
+            message = Message.query.get(self.m1_id)
+            self.assertIn(message.text, html)
+
+
+    def test_delete_message(self):
+        """Check message was deleted successfully when authenticated"""
+
+        with self.client as client:
+            with client.session_transaction() as sess:
+                sess[CURR_USER_KEY] = self.u1_id
+
+            # messages = self.u1.messages # <-- if assigned, this copy will get stored in memorey
+            resp = client.post(f'/messages/{self.m1_id}/delete', follow_redirects=True)
+            self.assertEqual(resp.status_code, 200)
+            html = resp.get_data(as_text=True)
+            self.assertIn(self.u1.username, html)
+
+            self.assertEqual(len(self.u1.messages), 0)
+
+
+
+# TODO: test response code is what you expect
+# TODO: DO LIGHT HTML TESTING
+# TODO: TEST AUTHENTICATION AND AUTHORIZATION
+
+# When you’re logged in, can you see the follower / following pages for any user?
+# When you’re logged out, are you disallowed from visiting a user’s follower / following pages?
+# When you’re logged in, can you add a message as yourself?
+# When you’re logged in, can you delete a message as yourself?
+# When you’re logged out, are you prohibited from adding messages?
+# When you’re logged out, are you prohibited from deleting messages?
+# When you’re logged in, are you prohibited from deleting another user’s message?
