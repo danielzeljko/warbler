@@ -46,6 +46,8 @@ class MessageBaseViewTestCase(TestCase):
         User.query.delete()
 
         u1 = User.signup("u1", "u1@email.com", "password", None)
+        u2 = User.signup("u2", "u2@email.com", "password", None)
+
         db.session.flush()
 
         m1 = Message(text="m1-text", user_id=u1.id)
@@ -57,6 +59,8 @@ class MessageBaseViewTestCase(TestCase):
 
         self.u1 = u1
         self.m1 = m1
+
+        self.u2 = u2
 
         self.client = app.test_client()
 
@@ -90,6 +94,15 @@ class MessageAddViewTestCase(MessageBaseViewTestCase):
             self.assertIn("This field is required.", html)
             self.assertEqual(resp.status_code, 200)
 
+    def test_add_message_not_authenticated(self):
+        """Submits message with invalid data"""
+
+        with self.client as client:
+            resp = client.post("/messages/new", data={"text": "test"}, follow_redirects=True)
+            self.assertEqual(resp.status_code, 200)
+            self.assertEqual(resp.request.path, "/")
+
+
     def test_show_message(self):
         """Check message shows up on page when authenticated"""
 
@@ -118,6 +131,26 @@ class MessageAddViewTestCase(MessageBaseViewTestCase):
             self.assertIn(self.u1.username, html)
 
             self.assertEqual(len(self.u1.messages), 0)
+
+    def test_delete_message_not_authenticated(self):
+        """Test delete message when not authenticated """
+
+        with self.client as client:
+            resp = client.post(f"/messages/{self.m1_id}/delete", follow_redirects=True)
+            self.assertEqual(resp.status_code, 200)
+            self.assertEqual(resp.request.path, "/")
+
+
+    def test_delete_message_different_user(self):
+        """Check message was not deleted for wrong user"""
+
+        with self.client as client:
+            with client.session_transaction() as sess:
+                sess[CURR_USER_KEY] = self.u2.id
+
+            resp = client.post(f'/messages/{self.m1_id}/delete', follow_redirects=True)
+            self.assertEqual(resp.status_code, 200)
+            self.assertEqual(len(self.u1.messages), 1)
 
 
 
