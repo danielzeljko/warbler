@@ -89,6 +89,9 @@ class UserFollowUnfollowTestCase(UserBaseViewTestCase):
             self.assertEqual(resp.status_code, 200)
             self.assertEqual(resp.request.path, "/")
 
+    # TODO: ADD TEST FOR FOLLOWING PAGES
+    # TODO: ADD TEST FOR LIKING THINGS.
+    # LEAVE TODOS IN GITHUB HOSTED CODE FOR EMPLOYERS TO SEE SHOWING FUTURE THOUGHTS
 
 
     # // When you’re logged in, can you see the follower / following pages for any user?
