@@ -158,10 +158,9 @@ class MessageAddViewTestCase(MessageBaseViewTestCase):
 # TODO: DO LIGHT HTML TESTING
 # TODO: TEST AUTHENTICATION AND AUTHORIZATION
 
-# When you’re logged in, can you see the follower / following pages for any user?
-# When you’re logged out, are you disallowed from visiting a user’s follower / following pages?
-# When you’re logged in, can you add a message as yourself?
-# When you’re logged in, can you delete a message as yourself?
-# When you’re logged out, are you prohibited from adding messages?
-# When you’re logged out, are you prohibited from deleting messages?
-# When you’re logged in, are you prohibited from deleting another user’s message?
+
+# // When you’re logged in, can you add a message as yourself?
+# // When you’re logged in, can you delete a message as yourself?
+# // When you’re logged out, are you prohibited from adding messages?
+# // When you’re logged out, are you prohibited from deleting messages?
+# // When you’re logged in, are you prohibited from deleting another user’s message?
