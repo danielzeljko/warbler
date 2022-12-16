@@ -42,6 +42,9 @@ class UserModelTestCase(TestCase):
         self.u1_id = u1.id
         self.u2_id = u2.id
 
+        self.u1 = u1
+        self.u2 = u2
+
         self.client = app.test_client()
 
     def tearDown(self):
@@ -53,3 +56,28 @@ class UserModelTestCase(TestCase):
         # User should have no messages & no followers
         self.assertEqual(len(u1.messages), 0)
         self.assertEqual(len(u1.followers), 0)
+
+
+    def test_is_not_following(self):
+        self.assertEqual(self.u1.is_following(self.u2), False)
+
+
+    def test_is_following(self):
+        self.u1.following.append(self.u2)
+        self.assertEqual(self.u1.is_following(self.u2), True)
+
+    def test_is_followed_by(self):
+        self.u1.followers.append(self.u2)
+        self.assertEqual(self.u1.is_followed_by(self.u2), True)
+
+    def test_is_not_followed_by(self):
+        self.assertEqual(self.u1.is_followed_by(self.u2), False)
+
+
+    def test_user_signed_up(self):
+        self.assertIsInstance(self.u1, User)
+
+    def test_user_did_not_sign_up_successfully(self):
+        with self.assertRaises(ValueError):
+            User.signup("notCoolUser", "niki@manaj.com", "", None)
+            db.session.commit()
