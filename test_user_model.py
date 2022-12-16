@@ -90,7 +90,7 @@ class UserModelTestCase(TestCase):
 
     def test_user_empty_password(self):
         """
-        Does User.signup fail to create a new user if password empty?
+        Throw error if empty password.
         """
 
         with self.assertRaises(ValueError):
@@ -99,7 +99,7 @@ class UserModelTestCase(TestCase):
 
     def test_user_username_duplicates(self):
         """
-        Does User.signup fail to create a new user if username already taken?
+        Throw error if duplicate username.
         """
 
         # note: must be imported from correct library
@@ -110,7 +110,7 @@ class UserModelTestCase(TestCase):
 
     def test_user_email_duplicates(self):
         """
-        Does User.signup fail to create a new user if email already taken?
+        Throw error if duplicate email.
         """
         with self.assertRaises(SQLIntegrityError):
             User.signup("notCoolUser", "niki@mansdaj.com", "asdasd", None)
@@ -120,6 +120,37 @@ class UserModelTestCase(TestCase):
 
     def test_user_authentication_valid_data(self):
         """
-        Does User.authenticate successfully return a user
-        when given a valid username and password?
+        Return user if valid credentials.
         """
+        u = User.authenticate(
+            username=self.u1.username,
+            password="password"
+        )
+
+        self.assertIsInstance(u, User)
+
+    def test_user_authentication_invalid_user(self):
+        """
+        Fail to return user if username invalid.
+        """
+        u = User.authenticate(
+            username="bob",
+            password="password"
+        )
+
+        self.assertNotIsInstance(u, User)
+
+
+    def test_user_authentication_invalid_password(self):
+        """
+        Fail to return user if password invalid.
+        """
+
+        u = User.authenticate(
+            username="u1",
+            password="asdasdasdasdasdasdasdasdasdasdasds"
+        )
+
+        self.assertNotIsInstance(u, User)
+
+
