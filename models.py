@@ -271,6 +271,17 @@ class Message(db.Model):
     #     self in g.user.liked_messages
     #     return t f
 
+    def serialize(self):
+        """ Serialize message instance to python dictionary """
+
+        return {
+            "id": self.id,
+            "text": self.text,
+            "timestamp": self.timestamp,
+            "user_id": self.user_id,
+        }
+
+
 
 
 

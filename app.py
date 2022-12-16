@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 
-from flask import Flask, render_template, request, flash, redirect, session, g
+from flask import Flask, jsonify, render_template, request, flash, redirect, session, g
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 
@@ -478,3 +478,32 @@ def add_header(response):
     # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
     response.cache_control.no_store = True
     return response
+
+
+
+
+# ============================= API ===============================
+
+@app.post('/api/messages/<int:message_id>/like')
+def like_message_api(message_id):
+    """
+    Allows a user to “like” or "unlike" a warble.
+
+    Returns: {message: {id, text, user_id }}
+    """
+
+    # TODO: refactor this
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
+    message = Message.query.get_or_404(message_id)
+
+    if message.user == g.user:
+        flash("You cannot like your own warble.", "danger")
+        return redirect("/")
+
+    serialized = message.serialize()
+
+    return (jsonify(message=serialized), 201)
