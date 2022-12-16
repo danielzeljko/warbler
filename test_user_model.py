@@ -55,6 +55,7 @@ class UserModelTestCase(TestCase):
         db.session.rollback()
 
     def test_user_model(self):
+        """ Test fresh user with no messages and followers """
         u1 = User.query.get(self.u1_id)
 
         # User should have no messages & no followers
@@ -63,30 +64,44 @@ class UserModelTestCase(TestCase):
 
 
     def test_is_not_following(self):
+        """ Test u1 not following u2"""
         self.assertEqual(self.u1.is_following(self.u2), False)
 
 
     def test_is_following(self):
+        """ Test u1 following u2 """
         self.u1.following.append(self.u2)
         self.assertEqual(self.u1.is_following(self.u2), True)
 
     def test_is_followed_by(self):
+        """ Test u2 following u1"""
+
         self.u1.followers.append(self.u2)
         self.assertEqual(self.u1.is_followed_by(self.u2), True)
 
     def test_is_not_followed_by(self):
+        """ Test u2 not following u1"""
         self.assertEqual(self.u1.is_followed_by(self.u2), False)
 
 
     def test_user_signed_up(self):
+        """ Test user signed up successfully """
         self.assertIsInstance(self.u1, User)
 
     def test_user_empty_password(self):
+        """
+        Does User.signup fail to create a new user if password empty?
+        """
+
         with self.assertRaises(ValueError):
             User.signup("notCoolUser", "niki@manaj.com", "", None)
             db.session.commit()
 
     def test_user_username_duplicates(self):
+        """
+        Does User.signup fail to create a new user if username already taken?
+        """
+
         # note: must be imported from correct library
         with self.assertRaises(SQLIntegrityError):
             User.signup("notCoolUser", "niki@manaj.com", "asdasd", None)
@@ -94,9 +109,17 @@ class UserModelTestCase(TestCase):
             db.session.commit()
 
     def test_user_email_duplicates(self):
+        """
+        Does User.signup fail to create a new user if email already taken?
+        """
         with self.assertRaises(SQLIntegrityError):
             User.signup("notCoolUser", "niki@mansdaj.com", "asdasd", None)
             User.signup("asdasdasda", "niki@mansdaj.com", "asdasd", None)
             db.session.commit()
 
 
+    def test_user_authentication_valid_data(self):
+        """
+        Does User.authenticate successfully return a user
+        when given a valid username and password?
+        """
