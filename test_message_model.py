@@ -52,7 +52,7 @@ class MessageModelTestCase(TestCase):
         db.session.rollback()
 
     def test_adding_message(self):
-
+        """test adding a message is successful"""
         new_msg = Message(user_id=self.u1_id, text="test")
         db.session.add(new_msg)
         db.session.commit()
@@ -60,6 +60,7 @@ class MessageModelTestCase(TestCase):
         self.assertIn(new_msg, self.u1.messages)
 
     def test_message_empty_text(self):
+        """test integrity error when adding message if text input is empty"""
         with self.assertRaises(SQLIntegrityError):
             new_msg = Message(user_id=self.u1_id, text=None)
             db.session.add(new_msg)

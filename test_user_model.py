@@ -58,7 +58,6 @@ class UserModelTestCase(TestCase):
         """ Test fresh user with no messages and followers """
         u1 = User.query.get(self.u1_id)
 
-        # User should have no messages & no followers
         self.assertEqual(len(u1.messages), 0)
         self.assertEqual(len(u1.followers), 0)
 
@@ -89,29 +88,22 @@ class UserModelTestCase(TestCase):
         self.assertIsInstance(self.u1, User)
 
     def test_user_empty_password(self):
-        """
-        Throw error if empty password.
-        """
+        """Throw error if empty password."""
 
         with self.assertRaises(ValueError):
             User.signup("notCoolUser", "niki@manaj.com", "", None)
             db.session.commit()
 
     def test_user_username_duplicates(self):
-        """
-        Throw error if duplicate username.
-        """
+        """Throw error if duplicate username."""
 
-        # note: must be imported from correct library
         with self.assertRaises(SQLIntegrityError):
             User.signup("notCoolUser", "niki@manaj.com", "asdasd", None)
             User.signup("notCoolUser", "asdasd@manaj.com", "asdasd", None)
             db.session.commit()
 
     def test_user_email_duplicates(self):
-        """
-        Throw error if duplicate email.
-        """
+        """Throw error if duplicate email."""
         with self.assertRaises(SQLIntegrityError):
             User.signup("notCoolUser", "niki@mansdaj.com", "asdasd", None)
             User.signup("asdasdasda", "niki@mansdaj.com", "asdasd", None)
@@ -119,9 +111,7 @@ class UserModelTestCase(TestCase):
 
 
     def test_user_authentication_valid_data(self):
-        """
-        Return user if valid credentials.
-        """
+        """Return user if valid credentials."""
         u = User.authenticate(
             username=self.u1.username,
             password="password"
@@ -130,9 +120,7 @@ class UserModelTestCase(TestCase):
         self.assertIsInstance(u, User)
 
     def test_user_authentication_invalid_user(self):
-        """
-        Fail to return user if username invalid.
-        """
+        """Fail to return user if username invalid."""
         u = User.authenticate(
             username="bob",
             password="password"
@@ -142,9 +130,7 @@ class UserModelTestCase(TestCase):
 
 
     def test_user_authentication_invalid_password(self):
-        """
-        Fail to return user if password invalid.
-        """
+        """Fail to return user if password invalid."""
 
         u = User.authenticate(
             username="u1",

@@ -151,16 +151,3 @@ class MessageAddViewTestCase(MessageBaseViewTestCase):
             resp = client.post(f'/messages/{self.m1_id}/delete', follow_redirects=True)
             self.assertEqual(resp.status_code, 200)
             self.assertEqual(len(self.u1.messages), 1)
-
-
-
-# TODO: test response code is what you expect
-# TODO: DO LIGHT HTML TESTING
-# TODO: TEST AUTHENTICATION AND AUTHORIZATION
-
-
-# // When you’re logged in, can you add a message as yourself?
-# // When you’re logged in, can you delete a message as yourself?
-# // When you’re logged out, are you prohibited from adding messages?
-# // When you’re logged out, are you prohibited from deleting messages?
-# // When you’re logged in, are you prohibited from deleting another user’s message?
