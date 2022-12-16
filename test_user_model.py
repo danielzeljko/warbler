@@ -10,6 +10,10 @@ from unittest import TestCase
 
 from models import db, User, Message, Follows, connect_db
 
+from psycopg2.errors import UniqueViolation
+
+from sqlalchemy.exc import IntegrityError as SQLIntegrityError
+
 # BEFORE we import our app, let's set an environmental variable
 # to use a different database for tests (we need to do this
 # before we import our app, since that will have already
@@ -77,7 +81,22 @@ class UserModelTestCase(TestCase):
     def test_user_signed_up(self):
         self.assertIsInstance(self.u1, User)
 
-    def test_user_did_not_sign_up_successfully(self):
+    def test_user_empty_password(self):
         with self.assertRaises(ValueError):
             User.signup("notCoolUser", "niki@manaj.com", "", None)
             db.session.commit()
+
+    def test_user_username_duplicates(self):
+        # note: must be imported from correct library
+        with self.assertRaises(SQLIntegrityError):
+            User.signup("notCoolUser", "niki@manaj.com", "asdasd", None)
+            User.signup("notCoolUser", "asdasd@manaj.com", "asdasd", None)
+            db.session.commit()
+
+    def test_user_email_duplicates(self):
+        with self.assertRaises(SQLIntegrityError):
+            User.signup("notCoolUser", "niki@mansdaj.com", "asdasd", None)
+            User.signup("asdasdasda", "niki@mansdaj.com", "asdasd", None)
+            db.session.commit()
+
+
