@@ -29,6 +29,10 @@ toolbar = DebugToolbarExtension(app)
 
 connect_db(app)
 
+from flask_wtf.csrf import CSRFProtect
+
+csrf = CSRFProtect(app)
+
 
 ##############################################################################
 # User signup/login/logout
@@ -506,7 +510,7 @@ def like_message_api(message_id):
 
     form = g.csrf_form
 
-    breakpoint()
+    # breakpoint()
 
 
     if form.validate_on_submit():
