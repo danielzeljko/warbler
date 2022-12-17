@@ -492,19 +492,36 @@ def like_message_api(message_id):
     Returns: {message: {id, text, user_id }}
     """
 
-    # TODO: refactor this
+    is_msg_liked = False
 
-    # if not g.user:
-    #     flash("Access unauthorized.", "danger")
-    #     return redirect("/")
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
 
     message = Message.query.get_or_404(message_id)
 
-    # if message.user == g.user:
-    #     flash("You cannot like your own warble.", "danger")
-    #     return redirect("/")
+    if message.user == g.user:
+        flash("You cannot like your own warble.", "danger")
+        return redirect("/")
+
+    form = g.csrf_form
+
+    breakpoint()
+
+
+    if form.validate_on_submit():
+        if message in g.user.liked_messages:
+            g.user.liked_messages.remove(message)
+        else:
+            g.user.liked_messages.append(message)
+            is_msg_liked = True
+
+        db.session.commit()
 
     serialized = message.serialize()
+    serialized["is_liked"] = is_msg_liked
+
+
     print(g.user)
 
     # if serialized['is_liked_status'] is True:

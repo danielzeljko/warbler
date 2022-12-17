@@ -1,32 +1,27 @@
-async function createCupcake() {
+"use strict";
 
-  const flavor = $form.find("#flavor").val();
-  const size = $form.find("#size").val();
-  const image = $form.find("#image").val();
-  const rating = $form.find("#rating").val();
+const PORT = 5000;
+const BASE_URL = `http://127.0.0.1:${PORT}/`;
 
-  // TODO: Validate form on backend
+const $likeMsgForms = $("form[data-msg-id]");
+
+async function likeWarble(message_id) {
 
   const response = await axios({
-      url: `${BASE_URL}/api/cupcakes`,
+      url: `${BASE_URL}/api/messages/${message_id}/like`,
       method: "POST",
-      data: {
-          flavor,
-          size,
-          image,
-          rating
-      }
   });
 
-  const data = response.data.cupcake;
-  appendToList(data);
+  console.log(response.data.message);
+  // appendToList(data);
 
-  $form.trigger("reset");
+  // $form.trigger("reset");
 }
 
 /** Submit form and display newly added cupcake */
 
-$form.on("submit", function (e) {
+$likeMsgForms.on("submit", function (e) {
   e.preventDefault();
-  createCupcake();
-});
+  const msgId = e.target.dataset.msgId
+  const resp = likeWarble(msgId);
+})
