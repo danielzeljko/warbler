@@ -494,16 +494,21 @@ def like_message_api(message_id):
 
     # TODO: refactor this
 
-    if not g.user:
-        flash("Access unauthorized.", "danger")
-        return redirect("/")
+    # if not g.user:
+    #     flash("Access unauthorized.", "danger")
+    #     return redirect("/")
 
     message = Message.query.get_or_404(message_id)
 
-    if message.user == g.user:
-        flash("You cannot like your own warble.", "danger")
-        return redirect("/")
+    # if message.user == g.user:
+    #     flash("You cannot like your own warble.", "danger")
+    #     return redirect("/")
 
     serialized = message.serialize()
+    print(g.user)
+
+    # if serialized['is_liked_status'] is True:
+    #     serialized['is_liked_status'] = False
+
 
     return (jsonify(message=serialized), 201)
